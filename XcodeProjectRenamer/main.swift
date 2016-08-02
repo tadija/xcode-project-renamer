@@ -72,7 +72,7 @@ class XcodeProjectRenamer: NSObject {
     func shouldSkip(_ element: String) -> Bool {
         guard !element.contains(".DS_Store") else { return true }
         
-        let ext = URL(fileURLWithPath: element).pathExtension!
+        let ext = URL(fileURLWithPath: element).pathExtension
         
         switch ext {
         case "plist", "xcassets", "appiconset", "json", "png", "lproj":
@@ -104,13 +104,13 @@ class XcodeProjectRenamer: NSObject {
         print("\nRENAME ITEM: \(path)")
         
         do {
-            let oldItemName = URL(fileURLWithPath: path).lastPathComponent!
+            let oldItemName = URL(fileURLWithPath: path).lastPathComponent
             if oldItemName.contains(oldName) {
                 let newItemName = oldItemName.replacingOccurrences(of: oldName, with: newName)
                 print("RENAME: \(oldItemName) -> \(newItemName)")
                 
-                let directoryURL = try URL(fileURLWithPath: path).deletingLastPathComponent()
-                let newPath = try directoryURL.appendingPathComponent(newItemName).path!
+                let directoryURL = URL(fileURLWithPath: path).deletingLastPathComponent()
+                let newPath = directoryURL.appendingPathComponent(newItemName).path
                 
                 try fileManager.moveItem(atPath: path, toPath: newPath)
             } else {
