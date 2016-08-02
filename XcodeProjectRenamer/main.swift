@@ -31,23 +31,36 @@ class XcodeProjectRenamer: NSObject {
     
     // MARK: - API
     
-    func renameUnitTests() {
+    func run() {
+        handleUnitTests()
+        handleUITests()
+        handleMainTarget()
+        handleProjectFile()
+    }
+    
+    // MARK: - Helpers
+    
+    private func handleUnitTests() {
+        print("Unit Tests")
         enumerateCurrentPath(appendingPathComponent: "\(oldName) Tests")
     }
     
-    func renameUITests() {
+    private func handleUITests() {
+        print("UI Tests")
         enumerateCurrentPath(appendingPathComponent: "\(oldName) UITests")
     }
     
-    func renameAppDirectory() {
+    private func handleMainTarget() {
+        print("Main Target")
         enumerateCurrentPath(appendingPathComponent: oldName)
     }
     
-    func renameProjectFile() {
+    private func handleProjectFile() {
+        print("Project File")
         enumerateCurrentPath(appendingPathComponent: "\(oldName).xcodeproj")
     }
     
-    func enumerateCurrentPath(appendingPathComponent pathComponent: String) {
+    private func enumerateCurrentPath(appendingPathComponent pathComponent: String) {
         let currentPath = fileManager.currentDirectoryPath
         let path = currentPath.appending("/\(pathComponent)/")
         
@@ -55,7 +68,7 @@ class XcodeProjectRenamer: NSObject {
         renameItem(atPath: path)
     }
     
-    func enumerateDirectory(atPath path: String) {
+    private func enumerateDirectory(atPath path: String) {
         print("\nDIRECTORY: \(path)")
         
         let enumerator = fileManager.enumerator(atPath: path)
@@ -69,7 +82,7 @@ class XcodeProjectRenamer: NSObject {
         }
     }
     
-    func shouldSkip(_ element: String) -> Bool {
+    private func shouldSkip(_ element: String) -> Bool {
         guard !element.contains(".DS_Store") else { return true }
         
         let ext = URL(fileURLWithPath: element).pathExtension
@@ -82,7 +95,7 @@ class XcodeProjectRenamer: NSObject {
         }
     }
     
-    func updateContentsOfFile(atPath path: String) {
+    private func updateContentsOfFile(atPath path: String) {
         print("\nUPDATE ITEM: \(path)")
         
         do {
@@ -100,7 +113,7 @@ class XcodeProjectRenamer: NSObject {
         }
     }
     
-    func renameItem(atPath path: String) {
+    private func renameItem(atPath path: String) {
         print("\nRENAME ITEM: \(path)")
         
         do {
@@ -123,8 +136,5 @@ class XcodeProjectRenamer: NSObject {
     
 }
 
-let xpr = XcodeProjectRenamer(oldName: "Blueprint", newName: "Playground")
-xpr.renameUnitTests()
-xpr.renameUITests()
-xpr.renameAppDirectory()
-xpr.renameProjectFile()
+let xpr = XcodeProjectRenamer(oldName: "ACBlueprint", newName: "Playground")
+xpr.run()
