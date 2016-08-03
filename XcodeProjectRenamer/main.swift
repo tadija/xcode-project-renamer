@@ -161,5 +161,12 @@ class XcodeProjectRenamer: NSObject {
     
 }
 
-let xpr = XcodeProjectRenamer(oldName: "ACBlueprint", newName: "Playground")
-xpr.run()
+let arguments = Process.arguments
+if arguments.count == 3 {
+    let oldName = arguments[1]
+    let newName = arguments[2].replacingOccurrences(of: " ", with: "")
+    let xpr = XcodeProjectRenamer(oldName: arguments[1], newName: newName)
+    xpr.run()
+} else {
+    print("\(XcodeProjectRenamer.Color.Red)Invalid number of arguments! Expected OLD and NEW project name.")
+}
