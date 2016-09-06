@@ -161,11 +161,12 @@ class XcodeProjectRenamer: NSObject {
     
 }
 
-let arguments = Process.arguments
+let arguments = CommandLine.arguments
+print("arguments:\(arguments)")
 if arguments.count == 3 {
     let oldName = arguments[1]
     let newName = arguments[2].replacingOccurrences(of: " ", with: "")
-    let xpr = XcodeProjectRenamer(oldName: arguments[1], newName: newName)
+    let xpr = XcodeProjectRenamer(oldName: (arguments[1]), newName: newName)
     xpr.run()
 } else {
     print("\(XcodeProjectRenamer.Color.Red)Invalid number of arguments! Expected OLD and NEW project name.")
