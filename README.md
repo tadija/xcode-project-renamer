@@ -1,24 +1,27 @@
-# Xcode Project Renamer #
+# Xcode Project Renamer
 
-**Shell script written in Swift 3 which does the renaming of Xcode project.**
+**Swift script for renaming Xcode project**
 
-It is optimized to work with the standard projects but it can also be used for any Xcode projects (maybe with some minor tweaks).
+It is currently optimized to work with our template project but it can also be used with any Xcode project (with some minor tweaks).
 
 It should be executed from inside the root of project directory and called with two string parameters: 
 **$OLD_PROJECT_NAME** & **$NEW_PROJECT_NAME**
 
-Script goes through all the files and directories, including Xcode Project File and replaces all occurrences of **$OLD_PROJECT_NAME** string with a **$NEW_PROJECT_NAME** string.
+Script goes through all the files and directories, including Xcode project file and replaces all occurrences of **$OLD_PROJECT_NAME** string with **$NEW_PROJECT_NAME** string.
 
-## Usage ##
+## Use
 
-`git clone https://bitbucket.org/appculture/xcodeprojectrenamer.git` (good luck with [that](https://bitbucket.org/site/master/issues/5232/authentication-failed-for-any-repo#comment-33134847))
+`git clone https://github.com/appculture/xcode-project-renamer.git`
 
-`cp xcodeprojectrenamer/XcodeProjectRenamer/main.swift ./rename.swift`
+`cp xcode-project-renamer/Sources/main.swift ./rename.swift`
 
-`rm -rf xcodeprojectrenamer`
+`rm -rf xcode-project-renamer`
 
 `chmod +x rename.swift`
 
 `./rename.swift "$OLD_PROJECT_NAME" "$NEW_PROJECT_NAME"`
 
 `rm rename.swift`
+
+## License
+This code is released under the MIT license. See [LICENSE](LICENSE) for details.
