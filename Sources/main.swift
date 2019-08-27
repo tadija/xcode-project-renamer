@@ -33,19 +33,22 @@ class XcodeProjectRenamer: NSObject {
     
     let oldName: String
     let newName: String
+    let shouldUseGit: Bool
     
     // MARK: - Init
     
-    init(oldName: String, newName: String) {
+    init(oldName: String, newName: String, useGit: Bool) {
         self.oldName = oldName
         self.newName = newName
+        self.shouldUseGit = useGit
     }
     
     // MARK: - API
     
     func run() {
+        let option = shouldUseGit ? "using" : "not using"
         print("\n\(Color.Green)------------------------------------------")
-        print("\(Color.Green)Rename Xcode Project from [\(oldName)] to [\(newName)]")
+        print("\(Color.Green)Rename Xcode Project from [\(oldName)] to [\(newName)] \(option) \'git mv\'")
         print("\(Color.Green)Current Path: \(fileManager.currentDirectoryPath)")
         print("\(Color.Green)------------------------------------------\n")
         
@@ -134,7 +137,13 @@ class XcodeProjectRenamer: NSObject {
                 let newItemName = oldItemName.replacingOccurrences(of: oldName, with: newName)
                 let directoryURL = URL(fileURLWithPath: path).deletingLastPathComponent()
                 let newPath = directoryURL.appendingPathComponent(newItemName).path
-                try fileManager.moveItem(atPath: path, toPath: newPath)
+                
+                // let git handle rename
+                if shouldUseGit {
+                    self.gitMoveItem(atPath: path, toPath: newPath)
+                } else {
+                    try fileManager.moveItem(atPath: path, toPath: newPath)
+                }
                 print("\(Color.Magenta)-- Renamed: \(oldItemName) -> \(newItemName)")
             }
         } catch {
@@ -142,14 +151,40 @@ class XcodeProjectRenamer: NSObject {
         }
     }
     
+    private func gitMoveItem(atPath: String, toPath: String) {
+        let shell = Process()
+        shell.launchPath = "/usr/bin/git"
+        shell.arguments = ["mv", atPath, toPath]
+        
+        let pipe = Pipe()
+        shell.standardOutput = pipe
+        shell.launch()
+        
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)
+        print(output!)
+    }
+    
 }
 
 let arguments = CommandLine.arguments
+var gitFlag = false
 if arguments.count == 3 {
     let oldName = arguments[1]
     let newName = arguments[2].replacingOccurrences(of: " ", with: "")
-    let xpr = XcodeProjectRenamer(oldName: oldName, newName: newName)
+    let xpr = XcodeProjectRenamer(oldName: oldName, newName: newName, useGit: gitFlag)
     xpr.run()
+} else if arguments.count == 4 {
+    let oldName = arguments[1]
+    let newName = arguments[2].replacingOccurrences(of: " ", with: "")
+    let gitArg = arguments[3]
+    if gitArg == "--use-git" {
+        gitFlag = true
+        let xpr = XcodeProjectRenamer(oldName: oldName, newName: newName, useGit: gitFlag)
+        xpr.run()
+    } else {
+        print("\(XcodeProjectRenamer.Color.Red)Unknown argument: \(gitArg)! Expected --use-git")
+    }
 } else {
     print("\(XcodeProjectRenamer.Color.Red)Invalid number of arguments! Expected OLD and NEW project name.")
 }
