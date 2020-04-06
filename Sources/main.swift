@@ -103,6 +103,7 @@ class XcodeProjectRenamer: NSObject {
             !element.contains("Carthage"),
             !element.contains("Pods"),
             !element.contains("fastlane")
+            !element.contains("build")
         else { return true }
         
         let fileExtension = URL(fileURLWithPath: element).pathExtension
