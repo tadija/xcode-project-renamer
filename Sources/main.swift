@@ -102,7 +102,7 @@ class XcodeProjectRenamer: NSObject {
             !element.contains(".DS_Store"),
             !element.contains("Carthage"),
             !element.contains("Pods"),
-            !element.contains("fastlane")
+            !element.contains("fastlane"),
             !element.contains("build")
         else { return true }
         
